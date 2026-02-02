@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - sender
+      - recipient
+
+  micro-sender:
+    build: ./micro-sender
+    container_name: micro-sender
+    ports:
+      - "8081:8080"
+    depends_on:
+      - rabbitmq
+    networks:
+      - sender
+
+  micro-recipient:
+    build: ./micro-recipient
+    container_name: micro-recipient
+    ports:
+      - "8082:8080"
+    depends_on:
+      - rabbitmq
+    networks:
+      - recipient
+
+  micro-collector:
+    build: ./micro-collector
+    container_name: micro-collector
+    depends_on:
+      - micro-recipient
+    networks:
+      - recipient
+
+networks:
+  sender:
+  recipient:
