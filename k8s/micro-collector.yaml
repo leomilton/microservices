@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: micro-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: micro-collector
+  template:
+    metadata:
+      labels:
+        app: micro-collector
+    spec:
+      containers:
+        - name: micro-collector
+          image: micro-collector:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
